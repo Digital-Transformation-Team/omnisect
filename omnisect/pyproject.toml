@@ -8,11 +8,16 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi (>=0.115.14,<0.116.0)",
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "dacite (>=1.9.2,<2.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "omnisect", from = "src"}]
+packages = [{include = "plugins"}]
 
+[tool.poetry.group.tests.dependencies]
+pytest-cov = "^6.2.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

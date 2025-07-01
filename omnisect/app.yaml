@@ -1,0 +1,8 @@
+# File storage settings
+TEST_DATA_PATH: $PROJECT/_test_files
+FILE_STORAGE_PATH: $HOME/.fitsuite/files
+FILE_STORAGE_PATH_TEST: $HOME/.fitsuite/test_files
+PLUGINS_FOLDER_PATH: $PROJECT/plugins/plugins
+
+# Log settings
+LOG_LEVEL: DEBUG
