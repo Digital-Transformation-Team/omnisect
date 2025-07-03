@@ -2,6 +2,7 @@ from logging import Logger
 from plugins.core.iplugin import IPlugin
 from plugins.plugin_use_case_service import PluginUseCase
 from src.dto import plugin_dto
+from src.errors.types import NotFoundError
 
 
 class PluginService:
@@ -19,8 +20,7 @@ class PluginService:
             None,
         )
         if not plugin:
-            # NotFoundErr
-            raise
+            raise NotFoundError("_error_plugin_not_found:", web_id)
         return plugin
 
     def list_plugins(self) -> list[plugin_dto.Read]:
