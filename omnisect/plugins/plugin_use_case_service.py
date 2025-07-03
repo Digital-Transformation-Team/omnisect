@@ -1,7 +1,8 @@
+from functools import cached_property
 import os
 from importlib import import_module
 from logging import Logger
-from typing import List, Any, Dict
+from typing import List, Any
 
 from plugins.core import IPluginRegistry, IPlugin
 from plugins.helpers import LogUtil
@@ -13,10 +14,16 @@ class PluginUseCase:
     _logger: Logger
     modules: List[type]
 
-    def __init__(self, options: Dict) -> None:
-        self._logger = LogUtil.create(options["log_level"])
+    def __init__(self) -> None:
+        self._logger = LogUtil.create()
         self.plugin_util = PluginUtility(self._logger)
         self.modules = list()
+
+    @cached_property
+    def plugins(self) -> list[IPlugin]:
+        return [
+            self.register_plugin(module, logger=self._logger) for module in self.modules
+        ]
 
     def __check_loaded_plugin_state(self, plugin_module: Any):
         if len(IPluginRegistry.plugins) > 0:
@@ -53,7 +60,7 @@ class PluginUseCase:
             else:
                 self._logger.debug(f"No valid plugin found in {package_name}")
 
-    def discover_plugins(self, reload: bool):
+    def discover_plugins(self, reload: bool = True):
         """
         Discover the plugin classes contained in Python files, given a
         list of directory names to scan.
@@ -84,8 +91,8 @@ class PluginUseCase:
         return module(logger)
 
     @staticmethod
-    def hook_plugin(plugin: IPlugin):
+    def hook_plugin(plugin: IPlugin, *args):
         """
         Return a function accepting commands.
         """
-        return plugin.invoke
+        return plugin.invoke(*args)

@@ -31,17 +31,10 @@ class PluginConfig:
 
 @dataclass
 class Meta:
+    web_id: str
     name: str
     description: str
     version: str
 
     def __str__(self) -> str:
         return f"{self.name}: {self.version}"
-
-
-@dataclass
-class Device:
-    name: str
-    firmware: int
-    protocol: str
-    errors: List[int]

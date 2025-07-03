@@ -8,6 +8,6 @@ class TestPluginUseCaseService:
     def test_discover_plugins(self, mock_distributions, mock_check_call):
         mock_distributions.return_value = []
         mock_check_call.return_value = 0
-        use_case = PluginUseCase(options={"log_level": "INFO"})
+        use_case = PluginUseCase()
         use_case.discover_plugins(reload=True)
         assert len(use_case.modules) == 1
