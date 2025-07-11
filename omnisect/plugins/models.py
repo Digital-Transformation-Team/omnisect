@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from src.proxies.transcriber_proxy import TranscriberProxy
+
 
 @dataclass
 class PluginRunTimeOption(object):
@@ -38,3 +40,18 @@ class Meta:
 
     def __str__(self) -> str:
         return f"{self.name}: {self.version}"
+
+
+@dataclass
+class PluginInput:
+    text: str
+
+
+@dataclass
+class PluginOutput:
+    text: str
+
+
+@dataclass
+class PluginServices:
+    transcriber_proxy: TranscriberProxy

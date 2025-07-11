@@ -6,6 +6,7 @@ from typing import List, Any
 
 from plugins.core import IPluginRegistry, IPlugin
 from plugins.helpers import LogUtil
+from plugins.models import PluginInput, PluginServices
 from plugins.utils import PluginUtility
 from fs_config import get_fs_config
 
@@ -81,18 +82,20 @@ class PluginUseCase:
             self.__search_for_plugins_in(plugins_path, package_name)
 
     @staticmethod
-    def register_plugin(module: type, logger: Logger) -> IPlugin:
+    def register_plugin(
+        module: type, logger: Logger, plugin_deps: PluginServices
+    ) -> IPlugin:
         """
         Create a plugin instance from the given module
         :param module: module to initialize
         :param logger: logger for the module to use
         :return: a high level plugin
         """
-        return module(logger)
+        return module(logger, plugin_deps)
 
     @staticmethod
-    def hook_plugin(plugin: IPlugin, *args):
+    def hook_plugin(plugin: IPlugin, input: PluginInput):
         """
         Return a function accepting commands.
         """
-        return plugin.invoke(*args)
+        return plugin.invoke(input)
