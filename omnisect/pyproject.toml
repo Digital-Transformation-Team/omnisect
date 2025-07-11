@@ -6,13 +6,16 @@ authors = [
     {name = "bl1nkker",email = "nurovich14@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12, <3.13"
 dependencies = [
     "fastapi (>=0.115.14,<0.116.0)",
     "pyyaml (>=6.0.2,<7.0.0)",
     "dacite (>=1.9.2,<2.0.0)",
     "uvicorn (>=0.35.0,<0.36.0)",
-    "dishka (>=1.6.0,<2.0.0)"
+    "dishka (>=1.6.0,<2.0.0)",
+    "cleo (>=2.1.0,<3.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)"
 ]
 
 [tool.poetry]
@@ -59,3 +62,7 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
+
+
+[tool.poetry.scripts]
+cli = "cli:main"

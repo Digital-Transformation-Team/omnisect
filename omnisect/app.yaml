@@ -1,3 +1,19 @@
+# Database settings
+DB_HOST: 127.0.0.1
+DB_PORT: 5432
+
+DB_USER: omnisect
+DB_PASS: omnisect
+DB_NAME: db_omnisect
+
+DB_TEST_USER: omnisect_test
+DB_TEST_PASS: omnisect_test
+DB_TEST_NAME: db_omnisect_test
+
+DB_POSTGRES_USER: postgres
+DB_POSTGRES_PASS: bl1nkker
+DB_POSTGRES_NAME: postgres
+
 # File storage settings
 TEST_DATA_PATH: $PROJECT/_test_files
 FILE_STORAGE_PATH: $HOME/.omnisect/files
