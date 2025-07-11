@@ -1,5 +1,5 @@
-from plugins.models import Meta, PluginInput, PluginOutput
 from plugins.core.iplugin import IPlugin
+from plugins.models import Meta, PluginInput, PluginOutput
 
 
 class SamplePlugin(IPlugin):

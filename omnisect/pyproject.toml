@@ -21,6 +21,41 @@ packages = [{include = "plugins"}]
 [tool.poetry.group.tests.dependencies]
 pytest-cov = "^6.2.1"
 
+
+[tool.poetry.group.linter.dependencies]
+ruff = "^0.12.2"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = [
+    "alembic/",
+    ".venv/"
+]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B"]  # Включаем полезные правила
+ignore = ["E501"]  # Отключаем правило длины строки (E501)
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"

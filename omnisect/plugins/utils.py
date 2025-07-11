@@ -1,23 +1,21 @@
 import os
 import subprocess
 import sys
-
+from importlib.metadata import Distribution as MetaDistribution
+from importlib.metadata import distributions
 from logging import Logger
 from subprocess import CalledProcessError
-from typing import List, Optional
 
-from importlib.metadata import distributions
-from importlib.metadata import Distribution as MetaDistribution
 from dacite import (
-    from_dict,
     ForwardReferenceError,
+    MissingValueError,
     UnexpectedDataError,
     WrongTypeError,
-    MissingValueError,
+    from_dict,
 )
 
-from plugins.models import PluginConfig, DependencyModule
 from plugins.helpers import FileSystem
+from plugins.models import DependencyModule, PluginConfig
 
 
 class PluginUtility:
@@ -32,7 +30,7 @@ class PluginUtility:
         return not PluginUtility.__IGNORE_LIST.__contains__(name)
 
     @staticmethod
-    def filter_plugins_paths(plugins_package) -> List[str]:
+    def filter_plugins_paths(plugins_package) -> list[str]:
         """
         filters out a list of unwanted directories
         :param plugins_package:
@@ -46,11 +44,11 @@ class PluginUtility:
 
     @staticmethod
     def __get_missing_packages(
-        installed: List[MetaDistribution], required: Optional[List[DependencyModule]]
-    ) -> List[DependencyModule]:
+        installed: list[MetaDistribution], required: list[DependencyModule] | None
+    ) -> list[DependencyModule]:
         missing = list()
         if required is not None:
-            installed_packages: List[str] = [pkg.name for pkg in installed]
+            installed_packages: list[str] = [pkg.name for pkg in installed]
             for required_pkg in required:
                 if not installed_packages.__contains__(required_pkg.name):
                     missing.append(required_pkg)
@@ -78,7 +76,7 @@ class PluginUtility:
             except CalledProcessError as e:
                 self._logger.error(f"Unable to install package {missing}", e)
 
-    def __read_configuration(self, module_path) -> Optional[PluginConfig]:
+    def __read_configuration(self, module_path) -> PluginConfig | None:
         # read configuration from configuration file
         try:
             plugin_config_data = FileSystem.load_configuration(
@@ -98,7 +96,7 @@ class PluginUtility:
             self._logger.error("Unable to parse plugin configuration to data class", e)
         return None
 
-    def setup_plugin_configuration(self, package_name, module_name) -> Optional[str]:
+    def setup_plugin_configuration(self, package_name, module_name) -> str | None:
         """
         Handles primary configuration for a give package and module
         :param package_name: package of the potential plugin
@@ -111,7 +109,7 @@ class PluginUtility:
             self._logger.debug(
                 f"Checking if configuration file exists for module: {module_name}"
             )
-            plugin_config: Optional[PluginConfig] = self.__read_configuration(
+            plugin_config: PluginConfig | None = self.__read_configuration(
                 module_path
             )
             if plugin_config is not None:

@@ -1,13 +1,12 @@
 from dataclasses import dataclass
-from typing import List, Optional
 
 from src.proxies.transcriber_proxy import TranscriberProxy
 
 
 @dataclass
-class PluginRunTimeOption(object):
+class PluginRunTimeOption:
     main: str
-    tests: Optional[List[str]]
+    tests: list[str] | None
 
 
 @dataclass
@@ -28,7 +27,7 @@ class PluginConfig:
     repository: str
     description: str
     version: str
-    requirements: Optional[List[DependencyModule]]
+    requirements: list[DependencyModule] | None
 
 
 @dataclass

@@ -1,5 +1,5 @@
-from tests.fixtures.file_fixtures import FileFixtures
 from plugins.helpers import FileSystem
+from tests.fixtures.file_fixtures import FileFixtures
 
 
 class TestHelpers(FileFixtures):

@@ -1,5 +1,6 @@
 from logging import Logger
 from unittest.mock import patch
+
 from plugins.utils import PluginUtility
 
 

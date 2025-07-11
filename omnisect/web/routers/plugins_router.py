@@ -3,8 +3,8 @@ from dishka.integrations.fastapi import DishkaSyncRoute
 from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from src.services.plugin_service import PluginService
 
+from src.services.plugin_service import PluginService
 
 router = APIRouter(
     prefix="/api/plugins/v1", tags=["Plugins"], route_class=DishkaSyncRoute

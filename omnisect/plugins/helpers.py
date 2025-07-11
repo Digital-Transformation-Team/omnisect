@@ -1,8 +1,7 @@
 import logging
 import os
 import sys
-from logging import Logger, StreamHandler, DEBUG
-from typing import Union
+from logging import DEBUG, Logger, StreamHandler
 
 import yaml
 
@@ -36,7 +35,7 @@ class LogUtil(Logger):
         self,
         name: str,
         log_format: str = __FORMATTER,
-        level: Union[int, str] = DEBUG,
+        level: int | str = DEBUG,
         *args,
         **kwargs
     ) -> None:

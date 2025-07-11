@@ -1,7 +1,8 @@
-from di.providers import PluginUseCaseProvider, ServiceProvider
 from dishka import make_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
+
+from di.providers import PluginUseCaseProvider, ServiceProvider
 from web.routers import plugins_router
 
 

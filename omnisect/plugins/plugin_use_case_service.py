@@ -1,19 +1,19 @@
-from functools import cached_property
 import os
+from functools import cached_property
 from importlib import import_module
 from logging import Logger
-from typing import List, Any
+from typing import Any
 
-from plugins.core import IPluginRegistry, IPlugin
+from fs_config import get_fs_config
+from plugins.core import IPlugin, IPluginRegistry
 from plugins.helpers import LogUtil
 from plugins.models import PluginInput, PluginServices
 from plugins.utils import PluginUtility
-from fs_config import get_fs_config
 
 
 class PluginUseCase:
     _logger: Logger
-    modules: List[type]
+    modules: list[type]
 
     def __init__(self) -> None:
         self._logger = LogUtil.create()
@@ -47,7 +47,7 @@ class PluginUseCase:
                 f"No plugin found in registry for module: {plugin_module}"
             )
 
-    def __search_for_plugins_in(self, plugins_path: List[str], package_name: str):
+    def __search_for_plugins_in(self, plugins_path: list[str], package_name: str):
         for directory in plugins_path:
             entry_point = self.plugin_util.setup_plugin_configuration(
                 package_name, directory

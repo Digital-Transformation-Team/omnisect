@@ -1,4 +1,5 @@
 from logging import Logger
+
 from plugins.core.iplugin import IPlugin
 from plugins.models import PluginInput
 from plugins.plugin_use_case_service import PluginUseCase
