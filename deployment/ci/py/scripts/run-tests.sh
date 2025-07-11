@@ -15,7 +15,7 @@ source ./deployment/ci/py/scripts/common-init.sh
 
 pushd omnisect
 
-poetry install --no-root --with tests,linter
+poetry install --with tests,linter
 ruff check .
 
 export PYTHON_ENV=test

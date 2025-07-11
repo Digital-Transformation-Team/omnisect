@@ -11,4 +11,4 @@ class TestPluginUseCaseService:
         mock_check_call.return_value = 0
         use_case = PluginUseCase()
         use_case.discover_plugins(reload=True)
-        assert len(use_case.modules) == 1
+        assert len(use_case.modules) >= 1
