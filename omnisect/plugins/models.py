@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 
+from openai import OpenAI
+from pydantic import Field
+
 from src.proxies.transcriber_proxy import TranscriberProxy
 
 
@@ -44,6 +47,7 @@ class Meta:
 @dataclass
 class PluginInput:
     text: str
+    language: str = Field(default="russian")
 
 
 @dataclass
@@ -54,3 +58,4 @@ class PluginOutput:
 @dataclass
 class PluginServices:
     transcriber_proxy: TranscriberProxy
+    openai_client: OpenAI

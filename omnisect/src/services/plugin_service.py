@@ -36,8 +36,8 @@ class PluginService:
     def get_plugin(self, web_id: str) -> plugin_dto.Read:
         return plugin_dto.Read.from_model(self._get_plugin_by_web_id(web_id=web_id))
 
-    def invoke_plugin(self, web_id: str) -> str:
+    def invoke_plugin(self, web_id: str, text: str) -> str:
         plugin = self._get_plugin_by_web_id(web_id=web_id)
         return self._plugin_use_case_service.hook_plugin(
-            plugin, input=PluginInput(text="some text")
+            plugin, input=PluginInput(text=text)
         )

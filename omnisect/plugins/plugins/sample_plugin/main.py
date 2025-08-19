@@ -1,10 +1,10 @@
 from plugins.core.iplugin import IPlugin
-from plugins.models import Meta, PluginInput, PluginOutput
+from plugins.models import Meta, PluginInput, PluginOutput, PluginServices
 
 
 class SamplePlugin(IPlugin):
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self, logger, plugin_services: PluginServices):
+        super().__init__(logger, plugin_services)
         self.meta = Meta(
             name="Sample Plugin",
             description="sample plugin template",

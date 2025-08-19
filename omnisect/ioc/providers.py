@@ -1,5 +1,7 @@
 from dishka import Provider, Scope, provide
+from openai import OpenAI
 
+from app_config import AppConfig
 from plugins.core.iplugin import IPlugin
 from plugins.helpers import LogUtil
 from plugins.models import PluginServices
@@ -17,7 +19,10 @@ class PluginUseCaseProvider(Provider):
 
     @provide(scope=Scope.APP)
     def provide_registered_plugins(
-        self, plugin_use_case: PluginUseCase, transcriber_proxy: TranscriberProxy
+        self,
+        plugin_use_case: PluginUseCase,
+        transcriber_proxy: TranscriberProxy,
+        openai_client: OpenAI,
     ) -> list[IPlugin]:
         # TODO: Move it to lifespan module
         logger = LogUtil.create()
@@ -25,7 +30,9 @@ class PluginUseCaseProvider(Provider):
             plugin_use_case.register_plugin(
                 mdl,
                 logger,
-                plugin_deps=PluginServices(transcriber_proxy=transcriber_proxy),
+                plugin_deps=PluginServices(
+                    transcriber_proxy=transcriber_proxy, openai_client=openai_client
+                ),
             )
             for mdl in plugin_use_case.modules
         ]
@@ -33,7 +40,6 @@ class PluginUseCaseProvider(Provider):
 
 
 class ServiceProvider(Provider):
-
     @provide(scope=Scope.REQUEST)
     def get_plugin_service(
         self, plugin_use_case: PluginUseCase, registered_plugins: list[IPlugin]
@@ -46,3 +52,7 @@ class ServiceProvider(Provider):
     @provide(scope=Scope.APP)
     def get_transcriber_proxy(self) -> TranscriberProxy:
         return TranscriberProxy()
+
+    @provide(scope=Scope.APP)
+    def get_openai_client(self, app_config: AppConfig) -> OpenAI:
+        return OpenAI(api_key=app_config.openai_api_key)

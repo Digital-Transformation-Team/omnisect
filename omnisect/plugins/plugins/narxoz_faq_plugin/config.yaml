@@ -1,0 +1,9 @@
+name: "Narxoz FAQ Plugin"
+alias: "narxoz-faq-plugin"
+creator: "bl1nkker"
+runtime:
+  main: "main.py"
+repository: "https://github.com/bl1nkker/sample-plugin"
+description: "narxoz faq plugin"
+version: "1.0.0"
+requirements:

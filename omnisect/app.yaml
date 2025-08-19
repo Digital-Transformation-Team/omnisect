@@ -22,3 +22,5 @@ PLUGINS_FOLDER_PATH: $PROJECT/plugins/plugins
 
 # Log settings
 LOG_LEVEL: DEBUG
+# OPENAI_API_KEY: hello-world?
+

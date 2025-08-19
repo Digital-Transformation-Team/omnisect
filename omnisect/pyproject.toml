@@ -15,7 +15,8 @@ dependencies = [
     "dishka (>=1.6.0,<2.0.0)",
     "cleo (>=2.1.0,<3.0.0)",
     "sqlalchemy (>=2.0.41,<3.0.0)",
-    "psycopg2 (>=2.9.10,<3.0.0)"
+    "psycopg2 (>=2.9.10,<3.0.0)",
+    "openai (>=1.99.9,<2.0.0)"
 ]
 
 [tool.poetry]
