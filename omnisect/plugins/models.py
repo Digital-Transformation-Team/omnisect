@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from typing import Any
 
-from openai import OpenAI
+from openai import BaseModel, OpenAI
 from pydantic import Field
 
 from src.proxies.transcriber_proxy import TranscriberProxy
@@ -46,13 +47,14 @@ class Meta:
 
 @dataclass
 class PluginInput:
-    text: str
+    text: str | None = None
     language: str = Field(default="russian")
+    data: dict[str, Any] | None = None
 
 
-@dataclass
-class PluginOutput:
-    text: str
+class PluginOutput(BaseModel):
+    text: str | None = None
+    file_path: str | None = None
 
 
 @dataclass

@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Any
+
+from pydantic import BaseModel, Field
 
 
 class Read(BaseModel):
@@ -15,3 +17,9 @@ class Read(BaseModel):
             description=obj.meta.description,
             version=obj.meta.version,
         )
+
+
+class InvokePlugin(BaseModel):
+    text: str | None = None
+    language: str = Field(default="russian")
+    data: dict[str, Any] | None = None

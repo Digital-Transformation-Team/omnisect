@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app_config import get_app_config
 from ioc import create_async_ioc_container
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_web_application():
     app = FastAPI(lifespan=lifespan)
+    app.mount("/files", StaticFiles(directory="files"), name="files")
     app.include_router(plugins_router.router)
     config = get_app_config()
     container = create_async_ioc_container(providers=get_providers(), config=config)

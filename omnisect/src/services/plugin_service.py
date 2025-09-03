@@ -1,7 +1,7 @@
 from logging import Logger
 
 from plugins.core.iplugin import IPlugin
-from plugins.models import PluginInput
+from plugins.models import PluginInput, PluginOutput
 from plugins.plugin_use_case_service import PluginUseCase
 from src.dto import plugin_dto
 from src.errors.types import NotFoundError
@@ -36,8 +36,12 @@ class PluginService:
     def get_plugin(self, web_id: str) -> plugin_dto.Read:
         return plugin_dto.Read.from_model(self._get_plugin_by_web_id(web_id=web_id))
 
-    def invoke_plugin(self, web_id: str, text: str) -> str:
+    def invoke_plugin(
+        self,
+        web_id: str,
+        inp: plugin_dto.InvokePlugin,
+    ) -> PluginOutput:
         plugin = self._get_plugin_by_web_id(web_id=web_id)
         return self._plugin_use_case_service.hook_plugin(
-            plugin, input=PluginInput(text=text)
+            plugin, input=PluginInput(text=inp.text, data=inp.data)
         )
