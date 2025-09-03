@@ -1,19 +1,15 @@
-from dataclasses import dataclass
+import os
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
+from src.dto import plugin_dto
 from src.services.plugin_service import PluginService
 
 router = APIRouter(prefix="/api/plugins/v1", tags=["Plugins"], route_class=DishkaRoute)
-
-
-@dataclass
-class InvokePluginBody:
-    text: str
 
 
 @router.get("/")
@@ -29,6 +25,22 @@ async def get_plugin(web_id: str, service: FromDishka[PluginService]):
 
 
 @router.post("/{web_id}")
-async def invoke_plugin(web_id: str, text: str, service: FromDishka[PluginService]):
-    data = service.invoke_plugin(web_id=web_id, text=text)
-    return JSONResponse(content=jsonable_encoder(data), status_code=status.HTTP_200_OK)
+async def invoke_plugin(
+    web_id: str,
+    service: FromDishka[PluginService],
+    body: plugin_dto.InvokePlugin,
+    request: Request,
+):
+    outp = service.invoke_plugin(web_id=web_id, inp=body)
+
+    if isinstance(outp.file_path, str) and os.path.isfile(outp.file_path):
+        file_name = os.path.basename(outp.file_path)
+        file_url = str(request.base_url) + f"files/{file_name}"
+        return JSONResponse(
+            content=jsonable_encoder({"file_url": file_url}),
+            status_code=status.HTTP_200_OK,
+        )
+    return JSONResponse(
+        content=jsonable_encoder(outp),
+        status_code=status.HTTP_200_OK,
+    )
