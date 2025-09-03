@@ -1,2 +1,3 @@
 class TestPluginService:
-    pass
+    def test_sample(self):
+        assert True
