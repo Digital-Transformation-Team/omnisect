@@ -1,0 +1,11 @@
+name: "Syllabus Weaver"
+alias: "syllabus-weaver"
+creator: "bl1nkker"
+runtime:
+  main: "main.py"
+repository: "https://github.com/bl1nkker/syllabus-weaver"
+description: "syllabus weaver"
+version: "0.0.1"
+requirements:
+  - name: "docxtpl"
+    version: "0.20.1"
