@@ -1,0 +1,13 @@
+name: "Sample Plugin"
+alias: "sample-plugin"
+creator: "bl1nkker"
+runtime:
+  main: "main.py"
+repository: "https://github.com/bl1nkker/sample-plugin"
+description: "Sample plugin template"
+version: "1.1.1"
+requirements:
+  - name: "tqdm"
+    version: "4.48.0"
+  - name: "six"
+    version: "1.17.0"
