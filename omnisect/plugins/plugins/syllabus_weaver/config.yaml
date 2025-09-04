@@ -21,6 +21,7 @@ instructions:
     - "Show these options to the user and let them pick the correct course."
     - "Once the course is selected, guide the user to fill all mandatory fields."
     - "The request body passed to the plugin must always include all mandatory fields in the following structure (no omissions are allowed)"
+    - "If an error occurs during generation, notify the user about it"
 
   input:
     type: json
@@ -123,9 +124,11 @@ instructions:
             - type: string
 
         - name: course_languages
-          type: enum
+          type: array
           required: True
-          enum: ["Kazakh language", "English language", "Russian language"]
+          items:
+            - type: enum
+              enum: ["Kazakh language", "English language", "Russian language"]
 
         - name: course_assessment_methods_isc_1
           type: array
@@ -172,6 +175,14 @@ instructions:
         - name: course_assessment_final_exam_form
           required: True
           type: string
+
+        - name: course_content_contact_hours_total
+          required: True
+          type: number
+
+        - name: course_content_sss_total
+          required: True
+          type: number
 
     validation_rules:
       - field: course_content
