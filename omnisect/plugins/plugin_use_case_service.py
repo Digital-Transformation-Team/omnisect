@@ -7,7 +7,7 @@ from typing import Any
 from fs_config import get_fs_config
 from plugins.core import IPlugin, IPluginRegistry
 from plugins.helpers import LogUtil
-from plugins.models import PluginInput, PluginServices
+from plugins.models import PluginConfig, PluginInput, PluginServices
 from plugins.utils import PluginUtility
 
 
@@ -18,15 +18,17 @@ class PluginUseCase:
     def __init__(self) -> None:
         self._logger = LogUtil.create()
         self.plugin_util = PluginUtility(self._logger)
-        self.modules = list()
+        # {SamplePlugin: PluginConfig()}
+        self.modules = dict()
 
     @cached_property
     def plugins(self) -> list[IPlugin]:
         return [
-            self.register_plugin(module, logger=self._logger) for module in self.modules
+            self.register_plugin(module, logger=self._logger, plugin_config=config)
+            for module, config in self.modules
         ]
 
-    def __check_loaded_plugin_state(self, plugin_module: Any):
+    def __check_loaded_plugin_state(self, plugin_module: Any, plugin_config):
         if len(IPluginRegistry.plugins) > 0:
             latest_module = IPluginRegistry.plugins[-1]
             latest_module_name = latest_module.__module__
@@ -35,7 +37,7 @@ class PluginUseCase:
                 self._logger.debug(
                     f"Successfully imported module `{current_module_name}`"
                 )
-                self.modules.append(latest_module)
+                self.modules[latest_module] = plugin_config
             else:
                 self._logger.error(
                     f"Expected to import -> `{current_module_name}` but got -> `{latest_module_name}`"
@@ -49,7 +51,7 @@ class PluginUseCase:
 
     def __search_for_plugins_in(self, plugins_path: list[str], package_name: str):
         for directory in plugins_path:
-            entry_point = self.plugin_util.setup_plugin_configuration(
+            entry_point, plugin_config = self.plugin_util.setup_plugin_configuration(
                 package_name, directory
             )
             if entry_point is not None:
@@ -60,7 +62,7 @@ class PluginUseCase:
                     f"{cfg.plugins_namespace_prefix}.{directory}.{plugin_entry}"
                 )
                 module = import_module(import_target_module, package_name)
-                self.__check_loaded_plugin_state(module)
+                self.__check_loaded_plugin_state(module, plugin_config)
             else:
                 self._logger.debug(f"No valid plugin found in {package_name}")
 
@@ -86,7 +88,10 @@ class PluginUseCase:
 
     @staticmethod
     def register_plugin(
-        module: type, logger: Logger, plugin_deps: PluginServices
+        module: type,
+        logger: Logger,
+        plugin_deps: PluginServices,
+        plugin_config: PluginConfig,
     ) -> IPlugin:
         """
         Create a plugin instance from the given module
@@ -94,7 +99,7 @@ class PluginUseCase:
         :param logger: logger for the module to use
         :return: a high level plugin
         """
-        return module(logger, plugin_deps)
+        return module(logger, plugin_deps, plugin_config)
 
     @staticmethod
     def hook_plugin(plugin: IPlugin, input: PluginInput):
