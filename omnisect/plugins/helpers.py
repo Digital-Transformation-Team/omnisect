@@ -5,9 +5,10 @@ from logging import DEBUG, Logger, StreamHandler
 
 import yaml
 
+from fs_config import get_fs_config
+
 
 class FileSystem:
-
     @staticmethod
     def __get_base_dir():
         """At most all application packages are just one level deep"""
@@ -16,8 +17,13 @@ class FileSystem:
 
     @staticmethod
     def get_plugins_directory() -> str:
-        base_dir = FileSystem.__get_base_dir()
-        return os.path.join(base_dir, "plugins")
+        cfg = get_fs_config()
+        return cfg.plugins_folder_path
+
+    @staticmethod
+    def get_outputs_directory() -> str:
+        cfg = get_fs_config()
+        return cfg.outputs_folder_path
 
     @staticmethod
     def load_configuration(name, config_directory) -> dict:
@@ -37,7 +43,7 @@ class LogUtil(Logger):
         log_format: str = __FORMATTER,
         level: int | str = DEBUG,
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(name, level)
         self.formatter = logging.Formatter(log_format)
