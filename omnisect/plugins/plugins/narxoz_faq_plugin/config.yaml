@@ -7,3 +7,4 @@ repository: "https://github.com/bl1nkker/sample-plugin"
 description: "narxoz faq plugin"
 version: "1.0.0"
 requirements:
+instructions:

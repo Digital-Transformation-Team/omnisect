@@ -33,8 +33,9 @@ class PluginUseCaseProvider(Provider):
                 plugin_deps=PluginServices(
                     transcriber_proxy=transcriber_proxy, openai_client=openai_client
                 ),
+                plugin_config=config,
             )
-            for mdl in plugin_use_case.modules
+            for mdl, config in plugin_use_case.modules.items()
         ]
         return plugins
 

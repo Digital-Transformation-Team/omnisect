@@ -96,7 +96,9 @@ class PluginUtility:
             self._logger.error("Unable to parse plugin configuration to data class", e)
         return None
 
-    def setup_plugin_configuration(self, package_name, module_name) -> str | None:
+    def setup_plugin_configuration(
+        self, package_name, module_name
+    ) -> tuple[str, PluginConfig] | None:
         """
         Handles primary configuration for a give package and module
         :param package_name: package of the potential plugin
@@ -112,7 +114,7 @@ class PluginUtility:
             plugin_config: PluginConfig | None = self.__read_configuration(module_path)
             if plugin_config is not None:
                 self.__manage_requirements(package_name, plugin_config)
-                return plugin_config.runtime.main
+                return plugin_config.runtime.main, plugin_config
             else:
                 self._logger.debug(
                     f"No configuration file exists for module: {module_name}"
@@ -120,4 +122,4 @@ class PluginUtility:
         self._logger.debug(
             f"Module: {module_name} is not a directory, skipping scanning phase"
         )
-        return None
+        return None, None

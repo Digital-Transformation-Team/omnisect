@@ -8,6 +8,7 @@ class Read(BaseModel):
     name: str
     description: str
     version: str
+    instructions: str | None = None
 
     @classmethod
     def from_model(cls, obj):
@@ -16,6 +17,7 @@ class Read(BaseModel):
             name=obj.meta.name,
             description=obj.meta.description,
             version=obj.meta.version,
+            instructions=obj.meta.instructions,
         )
 
 

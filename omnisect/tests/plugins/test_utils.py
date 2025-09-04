@@ -1,6 +1,7 @@
 from logging import Logger
 from unittest.mock import patch
 
+from plugins.models import PluginConfig
 from plugins.utils import PluginUtility
 from tests.base_test import BaseTest
 
@@ -18,6 +19,12 @@ class TestPluginUtility(BaseTest):
         assert (
             plugin_utility.setup_plugin_configuration(
                 package_name="sample-plugin", module_name="sample_plugin"
-            )
+            )[0]
             == "main.py"
+        )
+        assert isinstance(
+            plugin_utility.setup_plugin_configuration(
+                package_name="sample-plugin", module_name="sample_plugin"
+            )[1],
+            PluginConfig,
         )
