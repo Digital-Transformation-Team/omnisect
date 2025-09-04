@@ -53,9 +53,12 @@ class PluginUseCase:
                 package_name, directory
             )
             if entry_point is not None:
-                plugin_entry, plugin_ext = os.path.splitext(entry_point)
+                plugin_entry, _ = os.path.splitext(entry_point)
                 # Importing the module will cause IPluginRegistry to invoke it's __init__ fun
-                import_target_module = f"plugins.plugins.{directory}.{plugin_entry}"
+                cfg = get_fs_config()
+                import_target_module = (
+                    f"{cfg.plugins_namespace_prefix}.{directory}.{plugin_entry}"
+                )
                 module = import_module(import_target_module, package_name)
                 self.__check_loaded_plugin_state(module)
             else:

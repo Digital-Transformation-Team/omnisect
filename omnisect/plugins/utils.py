@@ -109,9 +109,7 @@ class PluginUtility:
             self._logger.debug(
                 f"Checking if configuration file exists for module: {module_name}"
             )
-            plugin_config: PluginConfig | None = self.__read_configuration(
-                module_path
-            )
+            plugin_config: PluginConfig | None = self.__read_configuration(module_path)
             if plugin_config is not None:
                 self.__manage_requirements(package_name, plugin_config)
                 return plugin_config.runtime.main
