@@ -26,7 +26,8 @@ class IPlugin(ABC, metaclass=IPluginRegistry):
             version=plugin_config.version,
             creator=plugin_config.creator,
             instructions=plugin_config.instructions.to_text(
-                plugin_name=plugin_config.name
+                plugin_name=plugin_config.name,
+                plugin_web_id=self._generate_web_id(config=plugin_config),
             )
             if plugin_config.instructions is not None
             else None,

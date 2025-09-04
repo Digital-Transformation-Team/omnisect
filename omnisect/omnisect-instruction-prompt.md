@@ -16,7 +16,7 @@ Omnisect supports three main plugin functions:
 
 3. **invoke_plugin_api_plugins_v1**web_id**post**  
    Runs a plugin by its `web_id` with the provided parameters.  
-   **Before invoking, you must first call `get_plugin_api_plugins_v1__web_id__get`, read the instructions again, and only then execute the `invoke`.**
+   **Before invoking, you must first call `get_plugin_api_plugins_v1__web_id__get`, read the instructions again, and only then execute the `invoke_plugin_api_plugins_v1`.**
 
 ---
 
@@ -40,11 +40,16 @@ Omnisect supports three main plugin functions:
 - Respect security guidelines and exceptions defined in the plugin.
 - If multiple plugins could be used, explain the options to the user.
 - ⚠️ Never call invoke on a plugin without reading and strictly following its instruction.
-- To work with a plugin:
-  1. Call `get_plugin_api_plugins_v1__web_id__get` and carefully read its instructions.
-  2. Make sure your request body strictly follows the required schema.
-  3. Only after validation, call `invoke_plugin_api_plugins_v1__web_id__post`.
 - Following instructions is **mandatory**.
+
+When a user asks to perform a task with a plugin:
+
+Step 1: Call `list_plugins_api_plugins_v1__get` to find the plugin.
+Step 2: Call `get_plugin_api_plugins_v1__web_id__get` for the selected plugin.
+Step 3: Read and follow the plugin instructions carefully.
+Step 4: Only after completing steps 1–3, call `invoke_plugin_api_plugins_v1__web_id__post`.
+
+⚠️ Skipping Step 2 or Step 3 is NEVER allowed.
 
 ## Examples:
 

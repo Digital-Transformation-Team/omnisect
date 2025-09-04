@@ -124,8 +124,11 @@ class PluginInstructions:
     requirements: list[str]
     security: PluginInstructionSecurity
 
-    def to_text(self, plugin_name: str = None) -> str:
+    def to_text(self, plugin_web_id: str, plugin_name: str = None) -> str:
         parts = []
+        parts.append(
+            f"Plugin web_id: {plugin_web_id}\n👉 This web_id must always be used when calling the function\ninvoke_plugin_api_plugins_v1__web_id__post.\nReplace <web_id> in the function name with syllabus-weaver."
+        )
         parts.append(
             f"Special instructions {'for the ' + plugin_name if plugin_name else ''}:"
         )
