@@ -35,7 +35,7 @@ async def invoke_plugin(
 
     if isinstance(outp.file_path, str) and os.path.isfile(outp.file_path):
         file_name = os.path.basename(outp.file_path)
-        file_url = str(request.base_url) + f"files/{file_name}"
+        file_url = str(request.base_url) + f"outputs/{file_name}"
         return JSONResponse(
             content=jsonable_encoder({"file_url": file_url}),
             status_code=status.HTTP_200_OK,

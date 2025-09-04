@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_web_application():
     app = FastAPI(lifespan=lifespan)
-    app.mount("/files", StaticFiles(directory="files"), name="files")
+    app.mount("/outputs", StaticFiles(directory="plugins/outputs"), name="outputs")
     app.include_router(plugins_router.router)
     config = get_app_config()
     container = create_async_ioc_container(providers=get_providers(), config=config)
