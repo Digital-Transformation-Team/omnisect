@@ -18,7 +18,14 @@ DB_POSTGRES_NAME: postgres
 TEST_DATA_PATH: $PROJECT/_test_files
 FILE_STORAGE_PATH: $HOME/.omnisect/files
 FILE_STORAGE_PATH_TEST: $HOME/.omnisect/test_files
+
+# Plugins
 PLUGINS_FOLDER_PATH: $PROJECT/plugins/plugins
+PLUGINS_FOLDER_PATH_TEST: $PROJECT/tests/plugins/plugins
+OUTPUTS_FOLDER_PATH: $PROJECT/plugins/outputs
+OUTPUTS_FOLDER_PATH_TEST: $PROJECT/tests/plugins/outputs
+PLUGINS_NAMESPACE_PREFIX: plugins.plugins
+PLUGINS_NAMESPACE_PREFIX_TEST: tests.plugins.plugins
 
 # Log settings
 LOG_LEVEL: DEBUG

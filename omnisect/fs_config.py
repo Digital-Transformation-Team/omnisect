@@ -10,6 +10,8 @@ class FsConfig(BaseModel):
     test_data_path: str
     file_storage_path: str
     plugins_folder_path: str
+    outputs_folder_path: str
+    plugins_namespace_prefix: str
 
 
 def _get_config(get_value: Callable[[str], str], is_test: bool) -> dict:
@@ -17,11 +19,23 @@ def _get_config(get_value: Callable[[str], str], is_test: bool) -> dict:
     file_storage_path = replace_known_dirs(
         get_value("FILE_STORAGE_PATH_TEST" if is_test else "FILE_STORAGE_PATH")
     )
-    plugins_folder_path = replace_known_dirs(get_value("PLUGINS_FOLDER_PATH"))
+    plugins_folder_path = replace_known_dirs(
+        get_value("PLUGINS_FOLDER_PATH_TEST" if is_test else "PLUGINS_FOLDER_PATH")
+    )
+    outputs_folder_path = replace_known_dirs(
+        get_value("OUTPUTS_FOLDER_PATH_TEST" if is_test else "OUTPUTS_FOLDER_PATH")
+    )
+    plugins_namespace_prefix = replace_known_dirs(
+        get_value(
+            "PLUGINS_NAMESPACE_PREFIX_TEST" if is_test else "PLUGINS_NAMESPACE_PREFIX"
+        )
+    )
     return dict(
         test_data_path=test_data_path,
         file_storage_path=file_storage_path,
         plugins_folder_path=plugins_folder_path,
+        outputs_folder_path=outputs_folder_path,
+        plugins_namespace_prefix=plugins_namespace_prefix,
     )
 
 
