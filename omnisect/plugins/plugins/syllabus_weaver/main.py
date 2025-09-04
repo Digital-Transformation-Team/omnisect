@@ -3,6 +3,7 @@ import os
 
 from docxtpl import DocxTemplate
 
+from fs_config import get_fs_config
 from plugins.core.iplugin import IPlugin
 from plugins.models import Meta, PluginInput, PluginOutput, PluginServices
 from plugins.plugins.syllabus_weaver import models
@@ -28,23 +29,16 @@ class SyllabusWeaver(IPlugin):
         return PluginOutput(file_path=f"/{doc_name}")
 
     def _generate_syllabus(self, context: models.CourseContext):
-        base_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "..", "..")
-        )
-        # TODO: default template must be inside app config
-        templates_dir = os.path.join(
-            base_dir, "plugins", "plugins", "syllabus_weaver", "templates"
-        )
-        outputs_dir = os.path.join(base_dir, "files")
+        cfg = get_fs_config()
+        templates_dir = os.path.join(os.path.join(os.path.dirname(__file__)), "templates")
 
-        os.makedirs(outputs_dir, exist_ok=True)
         # TODO: Generate on all 3 languages
         doc_name = f"{context.course_code}_{datetime.datetime.now().isoformat(timespec='seconds')}_eng.docx"
         # TODO: Template name must be inside config or as plugin prop
         tmplt = DocxTemplate(os.path.join(templates_dir, "eng.docx"))
         tmplt.render(context.model_dump())
 
-        output_path = os.path.join(outputs_dir, doc_name)
+        output_path = os.path.join(cfg.outputs_folder_path, doc_name)
         tmplt.save(output_path)
 
         return output_path
