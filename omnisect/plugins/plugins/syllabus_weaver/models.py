@@ -1,6 +1,6 @@
 from typing import Literal, Self
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class Teacher(BaseModel):
@@ -27,6 +27,9 @@ class AssessmentMethod(BaseModel):
 
 class CourseContext(BaseModel):
     teacher_name: str
+    university_name: Literal["narxoz"] = Field(
+        default="narxoz"
+    )  # add other universities here
     course_title: str
     course_code: str
     course_type: Literal["Compulsory", "Elective"]
