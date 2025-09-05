@@ -1,5 +1,8 @@
+import os
+
 import pytest
 
+from plugins.helpers import FileSystem
 from plugins.models import PluginConfig, PluginRunTimeOption
 from plugins.plugins.syllabus_weaver.main import SyllabusWeaver
 from plugins.plugins.syllabus_weaver.models import (
@@ -8,10 +11,25 @@ from plugins.plugins.syllabus_weaver.models import (
     CourseContext,
     Teacher,
 )
+from plugins.utils import PluginUtility
 from tests.base_test import BaseTest
 
 
 class PluginFixtures(BaseTest):
+    @pytest.fixture
+    def patch_file_system_get_plugins_directory(self, monkeypatch):
+        def _get_plugins_directory(*args, **kwargs):
+            return os.path.join(FileSystem.get_base_dir(), "plugins")
+
+        monkeypatch.setattr(FileSystem, "get_plugins_directory", _get_plugins_directory)
+
+    @pytest.fixture(autouse=True)
+    def setup_plugin(self, logger, patch_file_system_get_plugins_directory):
+        p_utils = PluginUtility(logger=logger)
+        p_utils.setup_plugin_configuration(
+            package_name="plugins", module_name="syllabus_weaver"
+        )
+
     @pytest.fixture
     def plugin(self, plugin_services, logger):
         return SyllabusWeaver(

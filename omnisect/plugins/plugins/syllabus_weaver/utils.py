@@ -1,13 +1,13 @@
 import os
 
-from docxtpl import DocxTemplate
-
 from fs_config import get_fs_config
 from plugins.plugins.syllabus_weaver import models
 from src.utils import DatetimeUtils
 
 
 def generate_syllabus(context: models.CourseContext):
+    from docxtpl import DocxTemplate
+
     cfg = get_fs_config()
     # TODO: Generate on all 3 languages
     doc_name = f"{context.course_code}_{DatetimeUtils.now_iso_str()}_eng.docx"
