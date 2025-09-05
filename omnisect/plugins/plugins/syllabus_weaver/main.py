@@ -23,7 +23,9 @@ class SyllabusWeaver(IPlugin):
     def _generate_syllabus(self, context: models.CourseContext):
         cfg = get_fs_config()
         templates_dir = os.path.join(
-            os.path.join(os.path.dirname(__file__)), "templates"
+            os.path.join(os.path.dirname(__file__)),
+            "templates",
+            context.university_name,
         )
 
         # TODO: Generate on all 3 languages
