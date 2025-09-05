@@ -10,7 +10,7 @@ from fs_config import get_fs_config
 
 class FileSystem:
     @staticmethod
-    def __get_base_dir():
+    def get_base_dir():
         """At most all application packages are just one level deep"""
         current_path = os.path.abspath(os.path.dirname(__file__))
         return current_path

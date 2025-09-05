@@ -23,7 +23,7 @@ def _get_config(get_value: Callable[[str], str], is_test: bool) -> dict:
         get_value("PLUGINS_FOLDER_PATH_TEST" if is_test else "PLUGINS_FOLDER_PATH")
     )
     outputs_folder_path = replace_known_dirs(
-        get_value("OUTPUTS_FOLDER_PATH_TEST" if is_test else "OUTPUTS_FOLDER_PATH")
+        get_value("FILE_STORAGE_PATH_TEST" if is_test else "OUTPUTS_FOLDER_PATH")
     )
     plugins_namespace_prefix = replace_known_dirs(
         get_value(
