@@ -40,7 +40,7 @@ class FileFixtures:
         if os.path.exists(fs_config.file_storage_path):
             shutil.rmtree(Path(fs_config.file_storage_path))
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def create_test_dir(self, fs_config):
         if not os.path.exists(fs_config.file_storage_path):
             Path(fs_config.file_storage_path).mkdir(parents=True, exist_ok=True)
