@@ -212,6 +212,7 @@ instructions:
 
   requirements:
     - "All values in the request body must be written in English, regardless of the language used by the user in the conversation!"
+    - "No '&' symbols. It brokes the .docx document!"
 
   security:
     guidelines:

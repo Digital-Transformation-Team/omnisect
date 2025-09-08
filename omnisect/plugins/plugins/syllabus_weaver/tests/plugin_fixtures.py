@@ -129,7 +129,7 @@ class PluginFixtures(BaseTest):
                     ),
                     CourseContentWeek(
                         week=15,
-                        topic="Course Review & Project Presentations",
+                        topic="Course Review and Project Presentations",
                         contract_hours=2,
                         sss=1,
                     ),
@@ -137,10 +137,10 @@ class PluginFixtures(BaseTest):
                 course_content_contact_hours_total=30,
                 course_content_sss_total=15,
                 course_required_literature=[
-                    "Russell, S., & Norvig, P. (2021). Artificial Intelligence: A Modern Approach."
+                    "Russell, S., and Norvig, P. (2021). Artificial Intelligence: A Modern Approach."
                 ],
                 course_recommended_literature=[
-                    "Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning."
+                    "Goodfellow, I., Bengio, Y., and Courville, A. (2016). Deep Learning."
                 ],
                 course_internet_sources=[
                     "https://ai.google",
@@ -160,7 +160,7 @@ class PluginFixtures(BaseTest):
                     AssessmentMethod(
                         week=6,
                         title="Midterm Exam",
-                        topic="Reasoning & Search",
+                        topic="Reasoning and Search",
                         form="Exam",
                         points=30,
                         weight=40,
