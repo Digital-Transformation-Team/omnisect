@@ -12,6 +12,7 @@ from plugins.plugins.syllabus_weaver.models import (
     Teacher,
 )
 from plugins.utils import PluginUtility
+from src.proxies.llm_provider_proxy import LlmProviderProxy
 from tests.base_test import BaseTest
 
 
@@ -22,6 +23,16 @@ class PluginFixtures(BaseTest):
             return os.path.join(FileSystem.get_base_dir(), "plugins")
 
         monkeypatch.setattr(FileSystem, "get_plugins_directory", _get_plugins_directory)
+
+    @pytest.fixture
+    def patch_llm_provider_proxy_invoke(self, monkeypatch):
+        def _do_patch(return_value):
+            def _invoke(*args, **kwargs):
+                return return_value
+
+            monkeypatch.setattr(LlmProviderProxy, "invoke", _invoke)
+
+        return _do_patch
 
     @pytest.fixture(autouse=True)
     def setup_plugin(self, logger, patch_file_system_get_plugins_directory):
@@ -50,7 +61,12 @@ class PluginFixtures(BaseTest):
 
     @pytest.fixture
     def course_context_builder(self):
-        def _gen(university_name: str = "narxoz"):
+        def _gen(
+            university_name: str = "narxoz",
+            is_content_empty: bool = False,
+            is_isc_1_assessments_empty: bool = False,
+            is_isc_2_assessments_empty: bool = False,
+        ):
             return CourseContext(
                 teacher_name="Dr. John Smith",
                 university_name=university_name,
@@ -133,7 +149,9 @@ class PluginFixtures(BaseTest):
                         contract_hours=2,
                         sss=1,
                     ),
-                ],
+                ]
+                if not is_content_empty
+                else None,
                 course_content_contact_hours_total=30,
                 course_content_sss_total=15,
                 course_required_literature=[
@@ -173,7 +191,9 @@ class PluginFixtures(BaseTest):
                         points=20,
                         weight=40,
                     ),
-                ],
+                ]
+                if not is_isc_1_assessments_empty
+                else None,
                 course_assessment_methods_isc_2=[
                     AssessmentMethod(
                         week=12,
@@ -199,7 +219,9 @@ class PluginFixtures(BaseTest):
                         points=20,
                         weight=40,
                     ),
-                ],
+                ]
+                if not is_isc_2_assessments_empty
+                else None,
                 course_assessment_final_exam_topic="Comprehensive evaluation of AI techniques",
                 course_assessment_final_exam_form="Written exam",
             )
