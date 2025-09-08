@@ -1,8 +1,29 @@
+import json
 import os
+from typing import Any
 
 from fs_config import get_fs_config
 from plugins.plugins.syllabus_weaver import models
 from src.utils import DatetimeUtils
+
+
+class ValueParser:
+    @staticmethod
+    def parse(value: str, expected_type: str) -> Any:
+        if expected_type == "string":
+            return value.strip()
+        if expected_type in ["integer", "number"]:
+            try:
+                return int(value) if expected_type["integer"] else float(value)
+            except ValueError as err:
+                raise ValueError(f"Expected {expected_type}, got {value}") from err
+        if expected_type in ["array", "object", "dict", "list"]:
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError as err:
+                raise ValueError(
+                    f"Expected JSON for {expected_type}, got {value}"
+                ) from err
 
 
 def generate_syllabus(context: models.CourseContext):

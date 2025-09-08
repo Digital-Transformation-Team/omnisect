@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from openai import BaseModel, OpenAI
+from openai import BaseModel
 from pydantic import Field
 
+from src.proxies.llm_provider_proxy import LlmProviderProxy
 from src.proxies.transcriber_proxy import TranscriberProxy
 
 
@@ -190,4 +191,4 @@ class PluginOutput(BaseModel):
 @dataclass
 class PluginServices:
     transcriber_proxy: TranscriberProxy
-    openai_client: OpenAI
+    llm_provider_proxy: LlmProviderProxy

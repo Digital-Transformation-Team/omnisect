@@ -50,10 +50,8 @@ class NarxozFaqPlugin(IPlugin):
                     "content": f"Ответь на следующий вопрос на языке {inp.language}: {inp.text}",
                 },
             ]
-            resp = self._plugin_services.openai_client.chat.completions.create(
-                model="gpt-4o-mini", messages=messages, max_tokens=800, temperature=0.7
-            )
-            return PluginOutput(text=resp.choices[0].message.content.strip())
+            result = self._plugin_services.llm_provider_proxy.invoke(messages=messages)
+            return PluginOutput(text=result)
 
         except Exception as e:
             self.logger.error(f"Error generating response: {e}")

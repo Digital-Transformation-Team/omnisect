@@ -1,11 +1,11 @@
 from dishka import Provider, Scope
-from openai import OpenAI
 
 from app_config import AppConfig
 from plugins.core.iplugin import IPlugin
 from plugins.helpers import LogUtil
 from plugins.models import PluginServices
 from plugins.plugin_use_case_service import PluginUseCase
+from src.proxies.llm_provider_proxy import LlmProviderProxy
 from src.proxies.transcriber_proxy import TranscriberProxy
 
 
@@ -22,7 +22,7 @@ def get_transcriber_proxy() -> TranscriberProxy:
 def get_plugins(
     plugin_use_case: PluginUseCase,
     transcriber_proxy: TranscriberProxy,
-    openai_client: OpenAI,
+    llm_provider_proxy: LlmProviderProxy,
 ) -> list[IPlugin]:
     logger = LogUtil.create()
     plugins = [
@@ -30,7 +30,8 @@ def get_plugins(
             mdl,
             logger,
             plugin_deps=PluginServices(
-                transcriber_proxy=transcriber_proxy, openai_client=openai_client
+                transcriber_proxy=transcriber_proxy,
+                llm_provider_proxy=llm_provider_proxy,
             ),
             plugin_config=config,
         )
@@ -39,8 +40,13 @@ def get_plugins(
     return plugins
 
 
-def get_openai_client(config: AppConfig) -> OpenAI:
-    return OpenAI(api_key=config.openai_api_key)
+def get_llm_provider_proxy(config: AppConfig) -> LlmProviderProxy:
+    return LlmProviderProxy(
+        api_key=config.openai_api_key,
+        model=config.llm_model,
+        max_tokens=config.llm_max_tokens,
+        temperature=config.llm_temperature,
+    )
 
 
 class InfrastructureProvider(Provider):
@@ -54,6 +60,10 @@ def infrastructure_provider():
         scope=Scope.APP,
     )
     provider.provide(
+        source=get_llm_provider_proxy,
+        scope=Scope.APP,
+    )
+    provider.provide(
         source=get_plugin_use_case,
         scope=Scope.APP,
     )
@@ -61,8 +71,5 @@ def infrastructure_provider():
         source=get_plugins,
         scope=Scope.APP,
     )
-    provider.provide(
-        source=get_openai_client,
-        scope=Scope.APP,
-    )
+
     return provider

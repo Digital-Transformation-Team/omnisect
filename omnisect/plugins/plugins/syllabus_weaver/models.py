@@ -43,9 +43,9 @@ class CourseContext(BaseModel):
     course_outcomes: str
     course_prerequisites: str
 
-    course_content: list[CourseContentWeek]
-    course_content_contact_hours_total: int
-    course_content_sss_total: int
+    course_content: list[CourseContentWeek] | None
+    course_content_contact_hours_total: int = Field(45)
+    course_content_sss_total: int = Field(60)
 
     course_required_literature: list[str]
     course_recommended_literature: list[str]
@@ -56,35 +56,37 @@ class CourseContext(BaseModel):
         Literal["Kazakh language", "English language", "Russian language"]
     ]
 
-    course_assessment_methods_isc_1: list[AssessmentMethod]
-    course_assessment_methods_isc_2: list[AssessmentMethod]
+    course_assessment_methods_isc_1: list[AssessmentMethod] | None
+    course_assessment_methods_isc_2: list[AssessmentMethod] | None
 
     course_assessment_final_exam_topic: str
     course_assessment_final_exam_form: str
 
+    def set_final_values(self):
+        # Do things after Pydantic validation
+        for i in range(len(self.course_content)):
+            # contract_hours must be 3 or 4 depending on number of credits
+            self.course_content[i].contract_hours = 3 if self.course_credits == 5 else 4
+            # sss must be 5 or 6 depending on number of credits
+            self.course_content[i].sss = 5 if self.course_credits == 5 else 6
+        self.course_content_contact_hours_total = sum(
+            item.contract_hours for item in self.course_content
+        )
+        self.course_content_sss_total = sum(item.sss for item in self.course_content)
+
     # --- Валидация бизнес-правил ---
     @model_validator(mode="after")
     def validate_weeks(self) -> Self:
+        if self.course_content is None:
+            return self
         if len(self.course_content) != 15:
             raise ValueError("Course must have exactly 15 weeks of content")
         return self
 
     @model_validator(mode="after")
-    def validate_contact_hours(self) -> Self:
-        total = sum(w.contract_hours for w in self.course_content)
-        if self.course_content_contact_hours_total != total:
-            raise ValueError(f"contact_hours_total must equal {total}")
-        return self
-
-    @model_validator(mode="after")
-    def validate_sss(self) -> Self:
-        total = sum(w.sss for w in self.course_content)
-        if self.course_content_sss_total != total:
-            raise ValueError(f"sss_total must equal {total}")
-        return self
-
-    @model_validator(mode="after")
     def validate_assessment1(self):
+        if self.course_assessment_methods_isc_1 is None:
+            return self
         total = sum(item.weight for item in self.course_assessment_methods_isc_1)
         if total != 100:
             raise ValueError(f"ISC1 weights must sum to 100, got {total}")
@@ -92,6 +94,8 @@ class CourseContext(BaseModel):
 
     @model_validator(mode="after")
     def validate_assessment2(self, v):
+        if self.course_assessment_methods_isc_2 is None:
+            return self
         total = sum(item.weight for item in self.course_assessment_methods_isc_2)
         if total != 100:
             raise ValueError(f"ISC2 weights must sum to 100, got {total}")
