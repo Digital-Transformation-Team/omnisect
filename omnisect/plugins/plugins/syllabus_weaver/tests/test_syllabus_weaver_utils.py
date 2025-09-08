@@ -1,7 +1,5 @@
 import os
 
-from docxtpl import DocxTemplate
-
 from plugins.plugins.syllabus_weaver.tests.plugin_fixtures import PluginFixtures
 from plugins.plugins.syllabus_weaver.utils import generate_syllabus
 from tests.fixtures.file_fixtures import FileFixtures
@@ -28,6 +26,8 @@ class TestUtils(FileFixtures, PluginFixtures):
     def test_generate_syllabus_should_update_template(
         self, sample_course_context, fs_config, cleanup_files
     ):
+        from docxtpl import DocxTemplate
+
         generate_syllabus(context=sample_course_context)
         doc = DocxTemplate(
             f"{fs_config.outputs_folder_path}/CS101_2024-01-01T12:00:00.000_eng.docx"
