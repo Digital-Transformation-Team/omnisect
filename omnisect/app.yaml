@@ -28,5 +28,9 @@ PLUGINS_NAMESPACE_PREFIX_TEST: tests.plugins.plugins
 
 # Log settings
 LOG_LEVEL: DEBUG
-# OPENAI_API_KEY: hello-world?
 
+# LLM configuration
+OPENAI_API_KEY: hello-world?
+LLM_MODEL: gpt-4o-mini
+LLM_TEMPERATURE: 0.7
+LLM_MAX_TOKENS: 800

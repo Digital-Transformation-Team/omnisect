@@ -2,10 +2,10 @@ import datetime
 import os
 
 import pytest
-from openai import OpenAI
 
 from plugins.helpers import LogUtil
 from plugins.models import PluginServices
+from src.proxies.llm_provider_proxy import LlmProviderProxy
 from src.proxies.transcriber_proxy import TranscriberProxy
 from src.utils import DatetimeUtils
 
@@ -32,5 +32,5 @@ class BaseTest:
     def plugin_services(self):
         return PluginServices(
             transcriber_proxy=TranscriberProxy(),
-            openai_client=OpenAI(api_key="wrong-key"),
+            llm_provider_proxy=LlmProviderProxy(api_key="another-wrong-key"),
         )
