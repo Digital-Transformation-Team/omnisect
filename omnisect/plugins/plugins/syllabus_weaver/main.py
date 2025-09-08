@@ -99,39 +99,49 @@ Constraints:
         ]
 
     def _generate_if_missing(
-        self, course_context: models.CourseContext, field: GeneratableField
+        self, data: dict[str, Any], field: GeneratableField
     ) -> dict[str, Any]:
-        if getattr(course_context, field.name) is None:
+        if data.get(field.name, None) is None:
+            self.logger.info(f"generating missing field: {field.name}")
             messages = self._system_prompts + [
                 {"role": "user", "content": field.prompt},
                 {
                     "role": "user",
-                    "content": f"Course Data: {course_context.teacher_name=}, {course_context.course_title=}, {course_context.course_code=}, {course_context.course_type=}, {course_context.course_level=}, {course_context.course_academic_year=}, {course_context.course_semester=}, {course_context.course_credits=}, {course_context.course_outcomes=}, {course_context.course_prerequisites=}",
+                    "content": f"Course Data: {data['teacher_name']}, {data['course_title']}, {data['course_code']}, {data['course_type']}, {data['course_level']}, {data['course_academic_year']}, {data['course_semester']}, {data['course_credits']}, {data['course_outcomes']}, {data['course_prerequisites']}",
                 },
             ]
-            # invoke openai api
             value = self._plugin_services.llm_provider_proxy.invoke(messages=messages)
-            setattr(
-                course_context,
-                field.name,
-                ValueParser.parse(value, expected_type=field.expected_type),
+            data[field.name] = ValueParser.parse(
+                value, expected_type=field.expected_type
             )
-        return course_context
-
-    def _postprocess_fields(
-        self, course_context: models.CourseContext
-    ) -> models.CourseContext:
-        for field in self.FIELDS_TO_GENERATE:
-            data = self._generate_if_missing(
-                course_context=course_context,
-                field=field,
+            self.logger.info(f"field {field.name} successfully generated")
+        else:
+            self.logger.debug(
+                f"field {field.name} already present, skipping generation"
             )
         return data
 
+    def _postprocess_fields(self, data: dict[str, Any]) -> dict[str, Any]:
+        self.logger.info("_postprocess_fields started")
+        for field in self.FIELDS_TO_GENERATE:
+            before = data.get(field.name)
+            data = self._generate_if_missing(data=data, field=field)
+            after = data.get(field.name)
+            if before != after:
+                self.logger.debug(f"field {field.name} updated during postprocessing")
+        self.logger.info("returning from _postprocess_fields")
+        return data
+
     def invoke(self, inp: PluginInput):
-        # send request to openapi client for field generation if course context field is marked as "must be generated"
-        context = models.CourseContext(**inp.data)
-        context = self._postprocess_fields(course_context=context)
-        # final validation
-        doc_name = generate_syllabus(context=context)
-        return PluginOutput(file_path=f"{doc_name}")
+        self.logger.info("invoking SyllabusWeaver plugin")
+        try:
+            context = models.CourseContext(**inp.data)
+            enriched_data = self._postprocess_fields(data=context.model_dump())
+            context = models.CourseContext(**enriched_data)
+            context.set_final_values()
+            doc_name = generate_syllabus(context=context)
+            self.logger.info(f"syllabus generated successfully: {doc_name}")
+            return PluginOutput(file_path=f"{doc_name}")
+        except Exception as e:
+            self.logger.error(f"error during plugin invocation: {e}", exc_info=True)
+            raise

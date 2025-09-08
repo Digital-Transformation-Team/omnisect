@@ -62,24 +62,17 @@ class CourseContext(BaseModel):
     course_assessment_final_exam_topic: str
     course_assessment_final_exam_form: str
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
+    def set_final_values(self):
         # Do things after Pydantic validation
-        if self.course_content is not None:
-            for i in range(len(self.course_content)):
-                # contract_hours must be 3 or 4 depending on number of credits
-                self.course_content[i].contract_hours = (
-                    3 if self.course_credits == 5 else 4
-                )
-                # sss must be 5 or 6 depending on number of credits
-                self.course_content[i].sss = 5 if self.course_credits == 5 else 6
-            self.course_content_contact_hours_total = sum(
-                item.contract_hours for item in self.course_content
-            )
-            self.course_content_sss_total = sum(
-                item.sss for item in self.course_content
-            )
+        for i in range(len(self.course_content)):
+            # contract_hours must be 3 or 4 depending on number of credits
+            self.course_content[i].contract_hours = 3 if self.course_credits == 5 else 4
+            # sss must be 5 or 6 depending on number of credits
+            self.course_content[i].sss = 5 if self.course_credits == 5 else 6
+        self.course_content_contact_hours_total = sum(
+            item.contract_hours for item in self.course_content
+        )
+        self.course_content_sss_total = sum(item.sss for item in self.course_content)
 
     # --- Валидация бизнес-правил ---
     @model_validator(mode="after")
