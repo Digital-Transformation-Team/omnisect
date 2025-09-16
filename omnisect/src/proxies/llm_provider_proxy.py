@@ -14,7 +14,7 @@ class LlmProviderProxy:
         self._temperature = temperature
         self._client = OpenAI(api_key=api_key)
 
-    def invoke(self, messages) -> str:
+    def invoke(self, messages: list[dict[str, str]]) -> str:
         resp = self._client.chat.completions.create(
             model=self._model,
             messages=messages,
