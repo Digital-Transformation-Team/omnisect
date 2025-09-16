@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI, status
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.cors import CORSMiddleware
 
 from app_config import get_app_config
 from ioc import create_async_ioc_container
@@ -54,6 +55,9 @@ def create_web_application(
         config=config,
     )
     setup_dishka(container=async_ioc_container, app=app)
+    app = CORSMiddleware(
+        app=app, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+    )
     return app
 
 
