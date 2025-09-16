@@ -11,6 +11,8 @@
 
 # }
 
+import datetime
+
 import requests
 
 from plugins.core.iplugin import IPlugin
@@ -51,8 +53,9 @@ class NewsMoth(IPlugin):
 
     def _fetch_news(self, country: str) -> list[dict]:
         try:
-            yesterday = "2025-09-15"
-            url = f"https://newsapi.org/v2/everything?q={country}&from={yesterday}&sortBy=popularity&apiKey={self._news_api_key}"
+            yesterday = datetime.date.today() - datetime.timedelta(days=1)
+            formatted = yesterday.strftime("%Y-%m-%d")
+            url = f"https://newsapi.org/v2/everything?q={country}&from={formatted}&sortBy=popularity&apiKey={self._news_api_key}"
             resp = requests.get(url, timeout=10)
             if resp.status_code == 200:
                 data = resp.json()
@@ -65,7 +68,6 @@ class NewsMoth(IPlugin):
             return []
 
     def _summarize_with_llm(self, country: str, articles: list[dict]) -> str:
-        print(country, len(articles))
         if not articles:
             return f"No significant news found for {country}."
 

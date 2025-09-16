@@ -39,7 +39,7 @@ class RiskFirefly(IPlugin):
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
                 "p": route,
-                "fields": "ob.tempC,ob.windSpeedKPH",
+                "fields": "ob.tempC,ob.windSpeedKPH,ob.humidity",
             }
             weather = requests.get(url, params=params, timeout=10).json()
         except Exception as e:
@@ -83,8 +83,8 @@ class RiskFirefly(IPlugin):
             avg_wind = sum(winds) / len(winds) if winds else 5
             usd_kzt = features.get("fx", {}).get("KZT", 480)
 
-            X = [avg_temp, avg_wind, usd_kzt]
-            prob = self.model.predict_proba([X])[0][1]
+            x = [avg_temp, avg_wind, usd_kzt]
+            prob = self.model.predict_proba([x])[0][1]
             return float(prob)
         except Exception as e:
             self.logger.error(f"ML prediction failed: {e}")
