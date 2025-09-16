@@ -1,0 +1,14 @@
+name: "Risk Firefly"
+alias: "risk-firefly"
+creator: "bl1nkker"
+runtime:
+  main: "main.py"
+repository: "https://github.com/bl1nkker/sample-plugin"
+description: "risk firefly plugin"
+version: "1.0.0"
+requirements:
+  - name: "joblib"
+    version: "1.5.2"
+  - name: "requests"
+    version: "2.32.5"
+instructions:

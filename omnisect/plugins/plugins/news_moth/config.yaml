@@ -1,0 +1,12 @@
+name: "News Moth"
+alias: "News moth"
+creator: "bl1nkker"
+runtime:
+  main: "main.py"
+repository: "https://github.com/bl1nkker/sample-plugin"
+description: "News Moth plugin"
+version: "1.0.0"
+requirements:
+  - name: "geocoder"
+    version: "1.38.1"
+instructions:

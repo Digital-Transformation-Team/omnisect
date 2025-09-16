@@ -5,7 +5,7 @@ runtime:
   main: "main.py"
 repository: "https://github.com/bl1nkker/syllabus-weaver"
 description: "This plugin helps generate course syllabuses. It guides the user step by step, validates the input, and ensures a complete request body is sent."
-version: "0.0.1"
+version: "0.0.3"
 requirements:
   - name: "docxtpl"
     version: "0.20.1"
