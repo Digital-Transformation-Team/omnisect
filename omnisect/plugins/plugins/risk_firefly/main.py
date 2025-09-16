@@ -5,21 +5,16 @@
 # }
 # }
 
-import joblib
 import requests
 
 from plugins.core.iplugin import IPlugin
 from plugins.models import PluginInput, PluginOutput
+from plugins.plugins.risk_firefly.models.predict_delay import predict_delay
 
 
 class RiskFirefly(IPlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        try:
-            self.model = joblib.load("models/risk_model.pkl")
-        except Exception:
-            self.model = None
-            self.logger.warning("ML model not found. Predictions will default to 0.5")
 
         self.client_id = "E3WVqjbXmm2kj4h2NxMyM"
         self.client_secret = "MgZ4yv4u3mIj20J5YDNs1WRObEwQyswEr0rQc3mu"
@@ -61,36 +56,24 @@ class RiskFirefly(IPlugin):
             "fx": fx.get("rates", {}),
         }
 
-    def _predict_risk_ml(self, features: dict) -> float:
-        if not self.model:
-            return 0.5
+    def _is_delay_ml(self, features: dict) -> float:
         try:
+            self.logger.debug("_is_delay_ml started")
             # извлекаем простые признаки из погоды
             weather_points = features.get("weather", {}).get("response", [])
             if not weather_points:
-                return 0.5
-
-            temps = []
-            winds = []
+                return False
             for p in weather_points:
-                ob = p.get("properties", {}).get("response", {}).get("ob", {})
-                if "tempC" in ob:
-                    temps.append(ob["tempC"])
-                if "windSpeedKPH" in ob:
-                    winds.append(ob["windSpeedKPH"])
-
-            avg_temp = sum(temps) / len(temps) if temps else 20
-            avg_wind = sum(winds) / len(winds) if winds else 5
-            usd_kzt = features.get("fx", {}).get("KZT", 480)
-
-            x = [avg_temp, avg_wind, usd_kzt]
-            prob = self.model.predict_proba([x])[0][1]
-            return float(prob)
+                ob = p["properties"]["response"]["ob"]
+                dl = predict_delay(temp=ob["tempC"], hum=ob["humidity"])
+                if dl == 1:
+                    return True
+            return False
         except Exception as e:
             self.logger.error(f"ML prediction failed: {e}")
-            return 0.5
+            return False
 
-    def _summarize_with_llm(self, data: dict, ml_risk: float) -> str:
+    def _summarize_with_llm(self, data: dict, ml_risk: bool) -> str:
         """
         Используем LLM для объяснения риска
         """
@@ -101,7 +84,7 @@ class RiskFirefly(IPlugin):
             - Product: {data["product"]}
             - Weather sample: {data["weather"]}
             - FX (USD->KZT): {data["fx"].get("KZT", "N/A")}
-            ML predicted risk: {ml_risk:.2f}
+            ML predicted risk: {"delay" if ml_risk else "no delay"}
 
             Summarize the main risk factors in plain language for a logistics manager.
             """
@@ -122,7 +105,7 @@ class RiskFirefly(IPlugin):
     def invoke(self, input: PluginInput) -> PluginOutput:
         try:
             data = self._fetch_external_data(input.data["route"], input.data["product"])
-            ml_risk = self._predict_risk_ml(data)
+            ml_risk = self._is_delay_ml(data)
             summary = self._summarize_with_llm(data, ml_risk)
             result_text = f"Predicted Risk: {ml_risk:.2f}\nSummary: {summary}"
 
